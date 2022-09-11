@@ -79,34 +79,6 @@ public class MemberRepositoryV4_2 implements MemberRepository {
   }
 
   @Override
-  public Member findById(Connection con, String memberId) {
-    String sql = "select * from member where member_id = ?";
-
-    PreparedStatement pstmt = null;
-    ResultSet rs = null;
-
-    try {
-      pstmt = con.prepareStatement(sql);
-      pstmt.setString(1, memberId);
-
-      rs = pstmt.executeQuery();
-      if (rs.next()) {
-        Member member = new Member();
-        member.setMemberId(rs.getString("member_id"));
-        member.setMoney(rs.getInt("money"));
-        return member;
-      } else {
-        throw new NoSuchElementException("member not found memberId = " + memberId);
-      }
-    } catch (SQLException e) {
-      throw sqlExceptionTranslator.translate("findById", sql, e);
-    } finally {
-      JdbcUtils.closeResultSet(rs);
-      JdbcUtils.closeStatement(pstmt);
-    }
-  }
-
-  @Override
   public void update(String memberId, int money) {
     String sql = "update member set money = ? where member_id = ?";
 
@@ -124,25 +96,6 @@ public class MemberRepositoryV4_2 implements MemberRepository {
       throw sqlExceptionTranslator.translate("update", sql, e);
     } finally {
       close(con, pstmt, null);
-    }
-  }
-
-  @Override
-  public void update(Connection con, String memberId, int money) {
-    String sql = "update member set money = ? where member_id = ?";
-
-    PreparedStatement pstmt = null;
-
-    try {
-      pstmt = con.prepareStatement(sql);
-      pstmt.setInt(1, money);
-      pstmt.setString(2, memberId);
-      int resultSize = pstmt.executeUpdate();
-      log.info("resultSize = {}", resultSize);
-    } catch (SQLException e) {
-      throw sqlExceptionTranslator.translate("update", sql, e);
-    } finally {
-      JdbcUtils.closeStatement(pstmt);
     }
   }
 

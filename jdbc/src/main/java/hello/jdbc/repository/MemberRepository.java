@@ -9,11 +9,7 @@ public interface MemberRepository {
 
     Member findById(String memberId);
 
-    Member findById(Connection con, String memberId);
-
     void update(String memberId, int money);
-
-    void update(Connection con, String memberId, int money);
 
     void delete(String memberId);
 }
